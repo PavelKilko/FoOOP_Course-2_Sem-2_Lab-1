@@ -25,16 +25,16 @@ void pge_ui::Menu::add_option(std::string sOption)
 {
 	vsOptions.push_back(sOption);
 	++sztOptionCount;
-	if(sOption.size() + 16*i32tFontSize > vi2dSize.x)
-		vi2dSize.x = sOption.size() + 16*i32tFontSize;
-	vi2dSize.y += 8*i32tFontSize;
+	if(sOption.size() + 16 * i32tFontSize > vi2dSize.x)
+		vi2dSize.x = sOption.size() + 16 * i32tFontSize;
+	vi2dSize.y += 8 * i32tFontSize;
 }
 
 void pge_ui::Menu::show(olc::PixelGameEngine *pge)
 {
 	for (int32_t i = 0; i < sztOptionCount; i++)
 	{
-		pge->DrawString(vi2dWindowPosition + olc::vi2d{1, 1+8*i32tFontSize*i},
+		pge->DrawString(vi2dWindowPosition + olc::vi2d{1, 1 + 8 * i32tFontSize*i},
 							(i == sztCursorPosition ? ">>" : "  ") + vsOptions[i],
 							olc::WHITE,
 							i32tFontSize);
@@ -47,7 +47,7 @@ std::string pge_ui::Menu::check_buttons(olc::PixelGameEngine *pge)
 	// Input with arrow keys:
 	if(pge->GetKey(olc::Key::DOWN).bPressed)
 	{
-		if (sztCursorPosition+1 == sztOptionCount)
+		if (sztCursorPosition + 1 == sztOptionCount)
 			sztCursorPosition = 0;
 		else
 			++sztCursorPosition;
@@ -55,7 +55,7 @@ std::string pge_ui::Menu::check_buttons(olc::PixelGameEngine *pge)
 	if(pge->GetKey(olc::Key::UP).bPressed)
 	{
 		if (sztCursorPosition == 0)
-			sztCursorPosition = sztOptionCount-1;
+			sztCursorPosition = sztOptionCount - 1;
 		else
 			--sztCursorPosition;
 	}
@@ -83,7 +83,7 @@ void pge_ui::Label::reset()
 void pge_ui::Label::set_name(std::string sNewName)
 {
 	sName = sNewName;
-	vi2dSize.x = sNewName.size()*i32tFontSize;
+	vi2dSize.x = sNewName.size() * i32tFontSize;
 }
 
 void pge_ui::Label::set_window_position(olc::vi2d vi2dNewWindowPosition)
@@ -415,8 +415,9 @@ void pge_ui::Button::reset()
 void pge_ui::Button::set_name(std::string sNewName)
 {
 	sName = sNewName;
-	vi2dSize.x = sName.size()*8*i32tFontSize+4;
-	vi2dSize.y = 8*i32tFontSize+4;
+	vi2dSize = {sName.size(), 1};
+	vi2dSize *= 8 * i32tFontSize;
+	vi2dSize += {4, 4};
 }
 
 void pge_ui::Button::set_window_position(olc::vi2d vi2dNewWindowPosition)
@@ -447,9 +448,9 @@ bool pge_ui::Button::in_focus(olc::PixelGameEngine *pge)
 {
 	olc::vi2d vi2dCursorPosition = olc::vi2d(pge->GetMouseX(), pge->GetMouseY());
 	if(vi2dCursorPosition.x >= vi2dWindowPosition.x 
-	&& vi2dCursorPosition.x < vi2dWindowPosition.x+vi2dSize.x
+	&& vi2dCursorPosition.x < vi2dWindowPosition.x + vi2dSize.x
 	&& vi2dCursorPosition.y >= vi2dWindowPosition.y
-	&& vi2dCursorPosition.y < vi2dWindowPosition.y+vi2dSize.y)
+	&& vi2dCursorPosition.y < vi2dWindowPosition.y + vi2dSize.y)
 		return true;
 	else
 		return false;
@@ -467,13 +468,13 @@ void pge_ui::Button::show(olc::PixelGameEngine *pge)
 {
 	if(in_focus(pge))
 	{
-		pge->DrawString(vi2dWindowPosition+olc::vi2d(3, 3), sName,
+		pge->DrawString(vi2dWindowPosition + olc::vi2d(4, 4), sName,
 										pxlFocusFontColor, i32tFontSize);
 		pge->DrawRect(vi2dWindowPosition, vi2dSize, pxlFocusFontColor);
 	}
 	else
 	{
-		pge->DrawString(vi2dWindowPosition+olc::vi2d(3, 3), sName,
+		pge->DrawString(vi2dWindowPosition + olc::vi2d(4, 4), sName,
 										pxlFontColor, i32tFontSize);
 		pge->DrawRect(vi2dWindowPosition, vi2dSize, pxlFontColor);
 	}
